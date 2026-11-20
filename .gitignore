@@ -1,0 +1,11 @@
+# upstream clones, weights, build output and private working notes stay local
+/refs/
+/llama.cpp/
+/work/
+/notes/
+/AGENTS.md
+/PLAN.md
+/RESEARCH.md
+__pycache__/
+*.gguf
+*.safetensors
