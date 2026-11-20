@@ -136,3 +136,23 @@ CC BY-NC 4.0 (non-commercial). Which weights you run is your decision and your r
 - The `Q1_0` tensor type and its CPU and CUDA kernels: llama.cpp, added for PrismML's 1-bit Bonsai models.
 - The test checkpoint: [LittleBitLLM/littlebit-qwen3-8b-0.55bpw](https://huggingface.co/LittleBitLLM/littlebit-qwen3-8b-0.55bpw).
 - The baseline: [Qwen/Qwen3-8B-GGUF](https://huggingface.co/Qwen/Qwen3-8B-GGUF).
+
+## Citation
+
+Please cite the original papers:
+
+```bibtex
+@inproceedings{lee2025littlebit,
+  title     = {LittleBit: Ultra Low-Bit Quantization via Latent Factorization},
+  author    = {Lee, Banseok and Kim, Dongkyu and You, Youngcheon and Kim, Youngmin},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2025}
+}
+
+@inproceedings{lee2026littlebit2,
+  title     = {LittleBit-2: Maximizing the Spectral Energy Gain in Sub-1-Bit LLMs via Latent Geometry Alignment},
+  author    = {Lee, Banseok and Kim, Youngmin},
+  booktitle = {International Conference on Machine Learning},
+  year      = {2026}
+}
+```
