@@ -6,8 +6,9 @@ llama.cpp already has. No new tensor type and no new kernel: a converter and a 6
 Research prototype. Not affiliated with Samsung or the llama.cpp project.
 
 **Related project:** [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) implements the same
-approach with a more complete patch (validation, tests, CI, Llama/Qwen2/Qwen3). Use that one for an upstream
-proposal; this repository is mainly the measurements below. See its issue #1 for how the two overlap.
+approach independently, with validation, tests and CI for Llama, Qwen2 and Qwen3. The two overlap
+(see its issue #1); this repository adds CUDA verification, an independent reference and speed measurements.
+Upstream discussion: [ggml-org/llama.cpp#32671](https://github.com/ggml-org/llama.cpp/discussions/32671).
 
 The code and measurements here were produced with AI assistance (Claude Code).
 
@@ -99,12 +100,34 @@ python scripts/reference_ppl.py checkpoint wiki.test.raw --ctx 2048 --chunks 4
 - LoRA adapters on factorised weights are ignored. Biases on factorised layers are untested.
 - Layers must have an input width that is a multiple of 128.
 
-## Licence and credits
+## Licence, provenance and credits
 
-Code in this repository: MIT. The patch is a change to llama.cpp (MIT). Model weights keep their own
-licence (the checkpoint above is CC BY-NC 4.0); no weights are distributed here.
-The checkpoint format and forward pass were learned by reading
-[SamsungLabs/LittleBit](https://github.com/SamsungLabs/LittleBit) (CC BY-NC 4.0); no code from it is included.
+**Licence.** Everything in this repository is MIT: use it, fork it, change it, ship it. See [LICENSE](LICENSE).
 
-Papers: LittleBit ([arXiv:2506.13771](https://arxiv.org/abs/2506.13771), NeurIPS 2025) and
-LittleBit-2 ([arXiv:2603.00042](https://arxiv.org/abs/2603.00042), ICML 2026), Lee, Kim, You and Kim.
+**What is not covered.** No model weights are included. A checkpoint you download keeps its own licence, and a
+GGUF you convert from it is a derivative of that checkpoint under the same terms. The checkpoint tested here is
+CC BY-NC 4.0 (non-commercial). Which weights you run is your decision and your responsibility, not this code's.
+
+**Provenance of the code.**
+
+- All scripts in `scripts/` were written for this repository. No code was copied from
+  [SamsungLabs/LittleBit](https://github.com/SamsungLabs/LittleBit) or its forks, which are CC BY-NC 4.0.
+  A line-by-line comparison of this repository against SamsungLabs/LittleBit, kimwin2/lb_kernels,
+  kimwin2/LittleSpec and GeniusDevam/littlebit-gguf finds no shared code lines beyond one standard
+  PyTorch call (`torch.set_num_threads(args.threads)`).
+- `patches/littlebit-q1_0.diff` is a change to [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT) and uses
+  its existing structures and style.
+- The code was written with AI assistance (Claude Code).
+
+**Ideas and facts borrowed, with thanks.**
+
+- The method: LittleBit ([arXiv:2506.13771](https://arxiv.org/abs/2506.13771), NeurIPS 2025) and LittleBit-2
+  ([arXiv:2603.00042](https://arxiv.org/abs/2603.00042), ICML 2026) by Lee, Kim, You and Kim (Samsung Research).
+- The checkpoint file layout, bit packing and forward-pass formula: learned by reading the official
+  SamsungLabs/LittleBit code. Facts about a format, not code.
+- Folding the row scales into the `Q1_0` block scale, the tensor names (`lb_g`, `lb_v`, `lb_u`, `_r`) and the
+  `littlebit.*` metadata keys: from the design notes in
+  [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) (MIT), adopted so files stay compatible.
+- The `Q1_0` tensor type and its CPU and CUDA kernels: llama.cpp, added for PrismML's 1-bit Bonsai models.
+- The test checkpoint: [LittleBitLLM/littlebit-qwen3-8b-0.55bpw](https://huggingface.co/LittleBitLLM/littlebit-qwen3-8b-0.55bpw).
+- The baseline: [Qwen/Qwen3-8B-GGUF](https://huggingface.co/Qwen/Qwen3-8B-GGUF).
