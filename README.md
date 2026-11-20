@@ -5,6 +5,12 @@ llama.cpp already has. No new tensor type and no new kernel: a converter and a 6
 
 Research prototype. Not affiliated with Samsung or the llama.cpp project.
 
+**Related project:** [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) implements the same
+approach with a more complete patch (validation, tests, CI, Llama/Qwen2/Qwen3). Use that one for an upstream
+proposal; this repository is mainly the measurements below. See its issue #1 for how the two overlap.
+
+The code and measurements here were produced with AI assistance (Claude Code).
+
 ## What is here
 
 | Path | What it is |
@@ -33,24 +39,25 @@ windows of 2048 tokens, second half of each window scored (`llama-perplexity` pr
 | 3 | 27.9020 | 27.8870 |
 | 4 | 26.2801 | 26.2874 |
 
-**Size, quality and speed** (12 windows; speed from `llama-bench`, prompt 512 tokens):
+**Size, quality and speed** (speed from `llama-bench`, prompt 512 tokens; full test set = 145 windows, on CUDA):
 
-| Model | File | PPL, 12 windows | CPU prompt / gen (t/s) | GPU prompt / gen (t/s) |
-|---|---|---|---|---|
-| LittleBit 0.55 bpw, F16 embeddings | 3086 MB | 20.86 (CPU), 20.87 (GPU) | not rerun | not measured |
-| LittleBit 0.55 bpw, Q8_0 embeddings | 1919 MB | 20.88 | not measured | not measured |
-| LittleBit 0.55 bpw, Q4_K_M embeddings | 1457 MB | 20.94 | 34.8 / 18.1 | 1129 / 57.8 |
-| Qwen3-8B Q4_K_M (standard, for scale) | 5028 MB | 8.50 | 40.8 / 7.7 | 1155 / 30.0 |
+| Model | File | PPL, 12 windows | PPL, full test set | CPU prompt / gen (t/s) | GPU prompt / gen (t/s) |
+|---|---|---|---|---|---|
+| LittleBit 0.55 bpw, F16 embeddings | 3086 MB | 20.86 (CPU), 20.87 (GPU) | 22.26 ± 0.18 | not rerun | 1152 / 46.7 |
+| LittleBit 0.55 bpw, Q8_0 embeddings | 1919 MB | 20.88 | not measured | not measured | 1130 / 52.9 |
+| LittleBit 0.55 bpw, Q4_K_M embeddings | 1457 MB | 20.94 | 22.31 ± 0.18 | 34.8 / 18.1 | 1129 / 57.8 |
+| Qwen3-8B Q4_K_M (standard, for scale) | 5028 MB | 8.50 | 8.78 ± 0.07 | 40.8 / 7.7 | 1155 / 30.0 |
 
 Reading the table:
 
 - The sub-1-bit model generates about twice as fast as the standard 4-bit one and is 3.5 times smaller.
-- Its quality is far worse: perplexity 20.9 against 8.5. That is the checkpoint, not the conversion.
+  Prompt processing is not faster: equal on GPU, about 15% slower on CPU.
+- Its quality is far worse: full-test-set perplexity 22.3 against 8.78. That is the checkpoint, not the conversion.
   Its model card reports ARC-Challenge below chance. It is a demonstration of the format, not a usable model.
 - The compressed layers are 579 MB. The embedding and output head are not compressed by LittleBit and
-  dominate the file; quantizing them to Q4_K_M costs 0.09 perplexity.
+  dominate the file; quantizing them to Q4_K_M costs 0.05 perplexity on the full test set.
 
-Not measured: full-test-set perplexity, other backends (Metal, Vulkan), other architectures, other checkpoints.
+Not measured: other backends (Metal, Vulkan), other architectures, other checkpoints.
 
 ## How it works
 
