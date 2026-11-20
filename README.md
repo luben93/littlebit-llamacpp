@@ -28,7 +28,7 @@ The code and measurements here were produced with AI assistance (Claude Code).
 
 Checkpoint: [LittleBitLLM/littlebit-qwen3-8b-0.55bpw](https://huggingface.co/LittleBitLLM/littlebit-qwen3-8b-0.55bpw)
 (Qwen3-8B at 0.55 bits per weight, residual path, 0.5 epoch of distillation; CC BY-NC 4.0).
-Hardware: laptop, 20-thread x86 CPU (6 threads used), NVIDIA RTX A1000 6 GB. Text: WikiText-2 test,
+Hardware: laptop, Intel Core i7-13700H (6 threads used), NVIDIA RTX A1000 6 GB, Linux. Builds: `-DGGML_NATIVE=ON`, Release; the GPU build adds `-DGGML_CUDA=ON` and runs with `-ngl 99`. Text: WikiText-2 test,
 windows of 2048 tokens, second half of each window scored (`llama-perplexity` protocol).
 
 **The conversion is faithful.** Running perplexity after each of the first four windows:
@@ -88,6 +88,8 @@ python scripts/convert_littlebit_to_gguf.py checkpoint littlebit-f16.gguf --llam
 python scripts/convert_littlebit_to_gguf.py checkpoint littlebit-q4.gguf --llama-cpp llama.cpp \
     --embd-quant Q4_K_M --quantize-bin llama.cpp/build/bin/llama-quantize
 
+# wiki.test.raw: the `text` column of the WikiText-2 raw test split
+# (huggingface.co/datasets/Salesforce/wikitext, config wikitext-2-raw-v1), rows concatenated without separators
 llama.cpp/build/bin/llama-perplexity -m littlebit-f16.gguf -f wiki.test.raw -c 2048 -b 2048 --chunks 4
 python scripts/reference_ppl.py checkpoint wiki.test.raw --ctx 2048 --chunks 4
 ```
@@ -97,8 +99,11 @@ python scripts/reference_ppl.py checkpoint wiki.test.raw --ctx 2048 --chunks 4
 - 3224 scale values in this checkpoint are below the fp16 normal range (smallest 4.7e-11) and lose
   precision in the `Q1_0` block scale. No effect is visible in perplexity.
 - Ranks are padded to a multiple of 128 (544→640, 208→256, 824→896): 579 MB instead of 464 MB.
+- No validation in the loader: a malformed file is not rejected with a clear error.
 - LoRA adapters on factorised weights are ignored. Biases on factorised layers are untested.
 - Layers must have an input width that is a multiple of 128.
+- CPU speed for the F16 and Q8_0 variants, and memory use, were not measured.
+- The 12-window numbers come from different backends (LittleBit Q8_0 and Q4_K_M on CPU, the baseline on CUDA); the full-test-set column is all CUDA.
 
 ## Licence, provenance and credits
 
@@ -127,7 +132,7 @@ CC BY-NC 4.0 (non-commercial). Which weights you run is your decision and your r
   SamsungLabs/LittleBit code. Facts about a format, not code.
 - Folding the row scales into the `Q1_0` block scale, the tensor names (`lb_g`, `lb_v`, `lb_u`, `_r`) and the
   `littlebit.*` metadata keys: from the design notes in
-  [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) (MIT), adopted so files stay compatible.
+  [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) (MIT), adopted so files can stay compatible. Cross-loading between the two projects has not been run; by inspection of their patch, a file from this converter meets their loader's checks.
 - The `Q1_0` tensor type and its CPU and CUDA kernels: llama.cpp, added for PrismML's 1-bit Bonsai models.
 - The test checkpoint: [LittleBitLLM/littlebit-qwen3-8b-0.55bpw](https://huggingface.co/LittleBitLLM/littlebit-qwen3-8b-0.55bpw).
 - The baseline: [Qwen/Qwen3-8B-GGUF](https://huggingface.co/Qwen/Qwen3-8B-GGUF).
