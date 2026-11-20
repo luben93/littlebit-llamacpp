@@ -1,9 +1,15 @@
 # littlebit-llamacpp
 
-Run a LittleBit / LittleBit-2 sub-1-bit checkpoint in llama.cpp, using the 1-bit `Q1_0` tensor type
-llama.cpp already has. No new tensor type and no new kernel: a converter and a 64-line patch.
+A small loader patch and a converter that let llama.cpp run LittleBit / LittleBit-2 sub-1-bit checkpoints,
+plus measurements on one published checkpoint.
 
-Research prototype. Not affiliated with Samsung or the llama.cpp project.
+**Whose work this is.** The compression method is LittleBit and LittleBit-2 by Banseok Lee, Dongkyu Kim,
+Youngcheon You and Youngmin Kim at Samsung Research. They developed the method, the training and the
+checkpoint format. This repository contributes only plumbing and tests: 64 lines that load their factorised
+layers into llama.cpp's existing 1-bit `Q1_0` type, a script that converts their checkpoint files, and
+measurements. No new tensor type and no new kernel. Please cite their papers (see [Citation](#citation)).
+
+Research prototype. Not affiliated with or endorsed by Samsung or the llama.cpp project.
 
 **Related project:** [GeniusDevam/littlebit-gguf](https://github.com/GeniusDevam/littlebit-gguf) implements the same
 approach independently, with validation, tests and CI for Llama, Qwen2 and Qwen3. The two overlap
