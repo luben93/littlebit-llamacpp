@@ -1,0 +1,44 @@
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (2517232 > 131072). Running this sequence through the model will result in indexing errors
+device cuda; calibration 256 x 512 tokens; test tokens 298938
+block  0: ranks q/k/mlp 256/128/256  block mse 0.06207 -> 0.02163  (77s)
+block  1: ranks q/k/mlp 256/128/256  block mse 0.04933 -> 0.03091  (74s)
+block  2: ranks q/k/mlp 256/128/256  block mse 86.56 -> 0.8884  (74s)
+block  3: ranks q/k/mlp 256/128/256  block mse 0.952 -> 0.8597  (74s)
+block  4: ranks q/k/mlp 256/128/256  block mse 0.9018 -> 0.7735  (74s)
+block  5: ranks q/k/mlp 256/128/256  block mse 0.8442 -> 0.8051  (75s)
+block  6: ranks q/k/mlp 256/128/256  block mse 0.8644 -> 0.8344  (75s)
+block  7: ranks q/k/mlp 256/128/256  block mse 0.8938 -> 0.8626  (75s)
+block  8: ranks q/k/mlp 256/128/256  block mse 0.9301 -> 0.8917  (75s)
+block  9: ranks q/k/mlp 256/128/256  block mse 0.9947 -> 0.9356  (75s)
+block 10: ranks q/k/mlp 256/128/256  block mse 1.135 -> 1.045  (75s)
+block 11: ranks q/k/mlp 256/128/256  block mse 1.438 -> 1.203  (75s)
+block 12: ranks q/k/mlp 256/128/256  block mse 1.417 -> 1.253  (75s)
+block 13: ranks q/k/mlp 256/128/256  block mse 1.597 -> 1.358  (75s)
+block 14: ranks q/k/mlp 256/128/256  block mse 1.874 -> 1.411  (74s)
+block 15: ranks q/k/mlp 256/128/256  block mse 1.782 -> 1.622  (75s)
+block 16: ranks q/k/mlp 256/128/256  block mse 2.767 -> 2.311  (75s)
+block 17: ranks q/k/mlp 256/128/256  block mse 3.854 -> 3.155  (75s)
+block 18: ranks q/k/mlp 256/128/256  block mse 5.346 -> 4.329  (75s)
+block 19: ranks q/k/mlp 256/128/256  block mse 8.31 -> 6.496  (74s)
+block 20: ranks q/k/mlp 256/128/256  block mse 13.3 -> 10.29  (75s)
+block 21: ranks q/k/mlp 256/128/256  block mse 19.85 -> 15.37  (74s)
+block 22: ranks q/k/mlp 256/128/256  block mse 27.32 -> 21.3  (75s)
+block 23: ranks q/k/mlp 256/128/256  block mse 35.5 -> 29.54  (74s)
+block 24: ranks q/k/mlp 256/128/256  block mse 50.2 -> 38.27  (75s)
+block 25: ranks q/k/mlp 256/128/256  block mse 60.28 -> 47.89  (75s)
+block 26: ranks q/k/mlp 256/128/256  block mse 70.01 -> 53.93  (75s)
+block 27: ranks q/k/mlp 256/128/256  block mse 174.3 -> 71.31  (75s)
+compressed layers: 0.716 bits per weight, 39 MB; total time 2092s
+Traceback (most recent call last):
+  File "scripts/layerwise_littlebit.py", line 271, in <module>
+    main()
+    ~~~~^^
+  File "scripts/layerwise_littlebit.py", line 267, in main
+    print(f"teacher perplexity ({args.eval_chunks} windows): {perplexity(m, None, test_ids, args.eval_ctx, args.eval_chunks):.2f}")
+                                                              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "work/.venv-cuda/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "scripts/layerwise_littlebit.py", line 175, in perplexity
+    lp = F.log_softmax(model.logits(x.to(model.dev).float())[0, first:-1].double(), -1)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.16 GiB. GPU 0 has a total capacity of 5.72 GiB of which 1.14 GiB is free. Including non-PyTorch memory, this process has 4.57 GiB memory in use. Of the allocated memory 3.61 GiB is allocated by PyTorch, and 831.53 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

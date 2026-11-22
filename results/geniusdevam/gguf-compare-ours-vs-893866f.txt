@@ -1,0 +1,26 @@
+# ours: scripts/convert_littlebit_to_gguf.py (luben93/littlebit-llamacpp 80ced36), --embd-type f16
+# theirs: GeniusDevam/littlebit-gguf 893866f convert_littlebit_to_gguf.py --embd-type f16 --validate 5
+tensors: ours 1659, theirs 1659; only ours 0, only theirs 0
+common tensors: 1299 byte-identical, 360 different
+   blk.0.attn_k.lb_u -> 2048 of 36864 bytes differ (Q1_0)
+   blk.0.attn_k.lb_u_r -> 2048 of 36864 bytes differ (Q1_0)
+   blk.0.attn_v.lb_u -> 2048 of 36864 bytes differ (Q1_0)
+   blk.0.attn_v.lb_u_r -> 2048 of 36864 bytes differ (Q1_0)
+   blk.0.ffn_down.lb_u -> 4096 of 516096 bytes differ (Q1_0)
+   blk.0.ffn_down.lb_u_r -> 4096 of 516096 bytes differ (Q1_0)
+   blk.0.ffn_gate.lb_u -> 12288 of 1548288 bytes differ (Q1_0)
+   blk.0.ffn_gate.lb_u_r -> 12288 of 1548288 bytes differ (Q1_0)
+   blk.0.ffn_up.lb_u -> 12288 of 1548288 bytes differ (Q1_0)
+   blk.0.ffn_up.lb_u_r -> 12288 of 1548288 bytes differ (Q1_0)
+   blk.1.attn_k.lb_u -> 2048 of 36864 bytes differ (Q1_0)
+   blk.1.attn_k.lb_u_r -> 2048 of 36864 bytes differ (Q1_0)
+metadata keys only ours: []
+metadata keys only theirs: []
+common metadata with different values: {'general.file_type': (1, 40), 'general.name': ('Tmp2Fsst6D5', 'Checkpoint'), 'general.size_label': ('1.2B', '5.4B')}
+
+# where the differing bytes are (sign-bit columns of each row; rank = true rank, r_pad = stored)
+  attn_k       r_pad= 256 differing sign columns 208..223  block scales identical: True  ours bit=1 theirs bit=0  (72 tensors)
+  attn_v       r_pad= 256 differing sign columns 208..223  block scales identical: True  ours bit=1 theirs bit=0  (72 tensors)
+  ffn_down     r_pad= 896 differing sign columns 824..831  block scales identical: True  ours bit=1 theirs bit=0  (72 tensors)
+  ffn_gate     r_pad= 896 differing sign columns 824..831  block scales identical: True  ours bit=1 theirs bit=0  (72 tensors)
+  ffn_up       r_pad= 896 differing sign columns 824..831  block scales identical: True  ours bit=1 theirs bit=0  (72 tensors)

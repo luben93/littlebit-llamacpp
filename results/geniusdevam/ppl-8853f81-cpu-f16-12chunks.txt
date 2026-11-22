@@ -1,0 +1,4 @@
+# GeniusDevam/littlebit-gguf 8853f81 (scripts/build.sh, CPU) on our littlebit-qwen3-8b-0.55bpw-f16.gguf: llama-perplexity -f wiki.test.raw -c 2048 -b 2048 --chunks 12 -t 10 -ngl 0
+perplexity: calculating perplexity over 12 chunks, n_ctx=2048, batch_size=2048, n_seq=1
+Final estimate: PPL = 20.8561 +/- 0.57920
+[1]23.5750,[2]25.8926,[3]27.9020,[4]26.2801,[5]26.5950,[6]22.2764,[7]19.2590,[8]19.2303,[9]20.1746,[10]20.0733,[11]20.2123,[12]20.8561,

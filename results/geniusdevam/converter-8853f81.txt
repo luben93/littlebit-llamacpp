@@ -1,0 +1,16 @@
+# GeniusDevam/littlebit-gguf converter at commit 8853f81 on LittleBitLLM/littlebit-qwen3-8b-0.55bpw (original checkpoint, sha256-verified download)
+$ python convert_littlebit_to_gguf.py <checkpoint> --outfile gd-8853f81-f16.gguf --embd-type f16 --validate 5
+conversion failed: model.layers.1.mlp.up_proj: nonzero scale rounds to zero in fp16
+blk.0.attn_q: rank 544/640, 0.7188 bpw
+blk.0.attn_k: rank 208/256, 0.7656 bpw
+blk.0.attn_v: rank 208/256, 0.7656 bpw
+blk.0.attn_output: rank 544/640, 0.7188 bpw
+blk.0.ffn_gate: rank 824/896, 0.6615 bpw
+blk.0.ffn_up: rank 824/896, 0.6615 bpw
+blk.0.ffn_down: rank 824/896, 0.6719 bpw
+blk.1.attn_q: rank 544/640, 0.7188 bpw
+blk.1.attn_k: rank 208/256, 0.7656 bpw
+blk.1.attn_v: rank 208/256, 0.7656 bpw
+blk.1.attn_output: rank 544/640, 0.7188 bpw
+blk.1.ffn_gate: rank 824/896, 0.6615 bpw
+exit code: 1

@@ -1,0 +1,6 @@
+# llama-bench -ngl 99 -t 6 -p 512 -n 64 -r 3, RTX A1000 6 GB, llama.cpp 9183a55 + patch
+file	file_bytes	test	avg_tokens_per_s	stddev
+Qwen_Qwen3-1.7B-Q4_K_M.gguf	1282439584	pp512	4783.29	18.61
+Qwen_Qwen3-1.7B-Q4_K_M.gguf	1282439584	tg64	118.96	0.46
+littlebit-qwen3-8b-0.55bpw-q2_k.gguf	1311202080	pp512	1131.47	8.59
+littlebit-qwen3-8b-0.55bpw-q2_k.gguf	1311202080	tg64	57.71	1.12

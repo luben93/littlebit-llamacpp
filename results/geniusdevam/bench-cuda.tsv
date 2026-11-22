@@ -1,0 +1,10 @@
+# llama-bench -ngl 99 -t 6 -p 512 -n 64 -r 3, RTX A1000 6 GB, both builds measured in the same session
+build.file	test	avg_tokens_per_s	stddev	build_commit	n_gpu_layers	n_threads
+gd8853f81-cuda.ours-f16	pp512	1132.93	17.62	6aee50801	99	6
+gd8853f81-cuda.ours-f16	tg64	46.99	0.53	6aee50801	99	6
+gd8853f81-cuda.ours-q4_k_m	pp512	1145.21	7.90	6aee50801	99	6
+gd8853f81-cuda.ours-q4_k_m	tg64	57.05	1.67	6aee50801	99	6
+ours-cuda.ours-f16	pp512	1152.00	5.12	9183a55	99	6
+ours-cuda.ours-f16	tg64	47.02	0.42	9183a55	99	6
+ours-cuda.ours-q4_k_m	pp512	1173.49	6.36	9183a55	99	6
+ours-cuda.ours-q4_k_m	tg64	58.84	0.08	9183a55	99	6

@@ -1,0 +1,33 @@
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (2517232 > 131072). Running this sequence through the model will result in indexing errors
+device cuda; calibration 1024 x 512 tokens; test tokens 298938
+block  0: ranks q/k/mlp 384/256/384  block rel 1.018 -> 0.1521  (835s)
+block  1: ranks q/k/mlp 384/256/384  block rel 0.4205 -> 0.124  (835s)
+block  2: ranks q/k/mlp 384/256/384  block rel 0.3062 -> 0.1288  (835s)
+block  3: ranks q/k/mlp 384/256/384  block rel 0.355 -> 0.1476  (836s)
+block  4: ranks q/k/mlp 384/256/384  block rel 0.2993 -> 0.1419  (835s)
+block  5: ranks q/k/mlp 384/256/384  block rel 0.2802 -> 0.149  (835s)
+block  6: ranks q/k/mlp 384/256/384  block rel 0.2723 -> 0.1609  (835s)
+block  7: ranks q/k/mlp 384/256/384  block rel 0.2728 -> 0.1717  (836s)
+block  8: ranks q/k/mlp 384/256/384  block rel 0.2916 -> 0.174  (836s)
+block  9: ranks q/k/mlp 384/256/384  block rel 0.274 -> 0.161  (835s)
+block 10: ranks q/k/mlp 384/256/384  block rel 0.2576 -> 0.1535  (835s)
+block 11: ranks q/k/mlp 384/256/384  block rel 0.3101 -> 0.1423  (835s)
+block 12: ranks q/k/mlp 384/256/384  block rel 0.3156 -> 0.1431  (835s)
+block 13: ranks q/k/mlp 384/256/384  block rel 0.3761 -> 0.1466  (835s)
+block 14: ranks q/k/mlp 384/256/384  block rel 0.4231 -> 0.1448  (834s)
+block 15: ranks q/k/mlp 384/256/384  block rel 0.224 -> 0.153  (834s)
+block 16: ranks q/k/mlp 384/256/384  block rel 0.2706 -> 0.1546  (836s)
+block 17: ranks q/k/mlp 384/256/384  block rel 0.2666 -> 0.1497  (835s)
+block 18: ranks q/k/mlp 384/256/384  block rel 0.255 -> 0.1437  (835s)
+block 19: ranks q/k/mlp 384/256/384  block rel 0.2738 -> 0.1459  (834s)
+block 20: ranks q/k/mlp 384/256/384  block rel 0.2722 -> 0.1408  (833s)
+block 21: ranks q/k/mlp 384/256/384  block rel 0.256 -> 0.1333  (834s)
+block 22: ranks q/k/mlp 384/256/384  block rel 0.2226 -> 0.1237  (834s)
+block 23: ranks q/k/mlp 384/256/384  block rel 0.1975 -> 0.1211  (833s)
+block 24: ranks q/k/mlp 384/256/384  block rel 0.194 -> 0.106  (834s)
+block 25: ranks q/k/mlp 384/256/384  block rel 0.1652 -> 0.09708  (834s)
+block 26: ranks q/k/mlp 384/256/384  block rel 0.1543 -> 0.0897  (831s)
+block 27: ranks q/k/mlp 384/256/384  block rel 0.3641 -> 0.1296  (829s)
+compressed layers: 1.084 bits per weight, 60 MB; total time 23364s
+teacher perplexity (12 windows): 17.39
+student perplexity (12 windows): 81.82

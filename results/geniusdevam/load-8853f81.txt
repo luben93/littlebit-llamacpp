@@ -1,0 +1,57 @@
+# Load-and-generate check only. The t/s figures printed here are not benchmarks: other jobs were running on the machine. See bench-cuda.tsv for speed.
+===== littlebit-qwen3-8b-0.55bpw-f16.gguf
+$ build/bin/llama-cli -m littlebit-qwen3-8b-0.55bpw-f16.gguf -ngl 0 -t 6 -c 512 --single-turn -p 'Once upon a time' -n 32 --seed 1 --temp 0   (GeniusDevam/littlebit-gguf 8853f81, scripts/build.sh, CPU)
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+Loading model... |-\|/-\|/ 
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+build      : b12571-6aee50801
+model      : out/littlebit-qwen3-8b-0.55bpw-f16.gguf
+ftype      : F16
+modalities : text
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+> Once upon a time
+Okay, I'm not sure if I can get the answer to this question. I'm not sure if I can get the answer to this question. I'm
+[ Prompt: 27.5 t/s | Generation: 8.2 t/s ]
+Exiting...
+exit code: 0
+===== littlebit-qwen3-8b-0.55bpw-q4_k_m.gguf
+$ build/bin/llama-cli -m littlebit-qwen3-8b-0.55bpw-q4_k_m.gguf -ngl 0 -t 6 -c 512 --single-turn -p 'Once upon a time' -n 32 --seed 1 --temp 0   (GeniusDevam/littlebit-gguf 8853f81, scripts/build.sh, CPU)
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+Loading model... |-\|/-\|/ 
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+build      : b12571-6aee50801
+model      : out/littlebit-qwen3-8b-0.55bpw-q4_k_m.gguf
+ftype      : Q4_K - Medium
+modalities : text
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+> Once upon a time
+Okay, I'm going to try to get the user to use the assistant. I'm going to use the user's name, and the user's email address
+[ Prompt: 21.9 t/s | Generation: 9.4 t/s ]
+Exiting...
+exit code: 0
