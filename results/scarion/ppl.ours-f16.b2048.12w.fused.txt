@@ -1,0 +1,5 @@
+# ScarionWorkspace/llama.cpp branch littlebit at 9699b11f5, built with -DGGML_CUDA=ON; RTX A1000 6 GB Laptop GPU (compute capability 8.6), i7-13700H
+# ppl.ours-f16.b2048.12w.fused ('unfused' = GGML_CUDA_DISABLE_FUSION=1; b2048/b8 = llama-perplexity -b; 12w/4w = --chunks)
+perplexity: calculating perplexity over 12 chunks, n_ctx=2048, batch_size=2048, n_seq=1
+Final estimate: PPL = 20.8654 +/- 0.57936
+[1]23.5845,[2]25.8911,[3]27.8864,[4]26.2736,[5]26.5941,[6]22.2774,[7]19.2628,[8]19.2359,[9]20.1801,[10]20.0791,[11]20.2208,[12]20.8654,

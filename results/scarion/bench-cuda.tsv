@@ -1,0 +1,19 @@
+# ScarionWorkspace/llama.cpp branch littlebit at 9699b11f5, built with -DGGML_CUDA=ON; RTX A1000 6 GB Laptop GPU (compute capability 8.6), i7-13700H
+# llama-bench -ngl 99 -t 6 -p 512 -n 64 -r 3; 'unfused' = GGML_CUDA_DISABLE_FUSION=1
+file	mode	test	avg_tokens_per_s	stddev
+ours-f16	fused	pp512	1071.54	60.31
+ours-f16	fused	tg64	24.61	0.40
+ours-f16	unfused	pp512	1102.97	9.09
+ours-f16	unfused	tg64	48.97	0.76
+ours-q4_k_m	fused	pp512	1089.34	12.49
+ours-q4_k_m	fused	tg64	27.70	0.38
+ours-q4_k_m	unfused	pp512	1120.31	4.64
+ours-q4_k_m	unfused	tg64	62.26	0.62
+sc-f16	fused	pp512	1036.89	62.00
+sc-f16	fused	tg64	24.90	0.09
+sc-f16	unfused	pp512	1062.41	25.19
+sc-f16	unfused	tg64	48.17	0.71
+sc-q4_k_m	fused	pp512	1129.00	8.56
+sc-q4_k_m	fused	tg64	27.89	0.14
+sc-q4_k_m	unfused	pp512	1095.63	4.77
+sc-q4_k_m	unfused	tg64	61.45	0.46

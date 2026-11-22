@@ -110,6 +110,28 @@ Requested in [their issue #1](https://github.com/GeniusDevam/littlebit-gguf/issu
 
 The two converters and the two loaders are interchangeable for this checkpoint.
 
+## Cross-checks with ScarionWorkspace's fork
+
+Requested in the same issue thread: their fused GPU kernels had only run on AMD hardware. Their fork
+(`ScarionWorkspace/llama.cpp`, branch `littlebit`, `9699b11f5`) built with `-DGGML_CUDA=ON` on the RTX A1000 6 GB.
+"Unfused" means `GGML_CUDA_DISABLE_FUSION=1`. Logs: `results/scarion/`.
+
+| Check | Result |
+|---|---|
+| Builds with CUDA; their converter on the original checkpoint | Yes; 2917 MiB (F16), 1364 MiB with Q4_K_M embeddings |
+| Their backend tests, `test-backend-ops -o LITTLEBIT_LINEAR -b CUDA0` | 56 of 56 pass |
+| Perplexity, usual settings, 12 windows | 20.8654, same as our build (the fused path is not used at this batch size) |
+| Perplexity in batches of 8 tokens, 4 windows, fused | 23.6015, 25.8979, 27.8874, 26.2876: within 0.0004 of the PyTorch float32 reference above |
+| Same, unfused | 23.6236, 25.9089, 27.9168, 26.2924 |
+| Generation speed (tg64), their F16 file | **24.9 t/s fused, 48.2 t/s unfused** |
+| Generation speed (tg64), their Q4_K_M-embedding file | **27.9 t/s fused, 61.5 t/s unfused** |
+| Our own files in their build | Load and run; same speeds within noise (24.6 / 49.0 and 27.7 / 62.3) |
+| Their per-layer micro-benchmark, q/o projection, 1 token | 99.7 µs fused, 37.9 µs unfused, 63.4 µs dense Q4_K |
+
+On this NVIDIA card the fused path is the more exact one, as they report, but it is about half the speed of the
+unfused path, the opposite of their result on an AMD RX 9070 XT (82 to 140 t/s). Ranks that are not multiples of
+32 (208 and 824 in this checkpoint) caused no problem.
+
 ## Layer-wise training experiment
 
 Separately from the plumbing, we tried compressing a model ourselves on the 6 GB laptop GPU with a cheaper

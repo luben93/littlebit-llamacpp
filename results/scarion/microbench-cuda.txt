@@ -1,0 +1,18 @@
+# tools/lb_bench_linear.cpp (ScarionWorkspace/littlebit-gguf 3626bde) against ScarionWorkspace/llama.cpp 9699b11f5 built with -DGGML_CUDA=ON
+# RTX A1000 6 GB Laptop GPU (compute capability 8.6). n_tokens=1, 36 layers, 200 iterations (tool defaults).
+## q/o: n_in=4096 n_out=4096 r=544
+q4_k dense          : q4_k n_in=4096 n_out=4096 r=544 n_tok=1: 63.44 us per projection (36 nodes/graph)
+lb fused (default)  : lb n_in=4096 n_out=4096 r=544 n_tok=1: 99.67 us per projection (324 nodes/graph)
+lb fusion disabled  : lb n_in=4096 n_out=4096 r=544 n_tok=1: 37.90 us per projection (324 nodes/graph)
+## gate/up: n_in=4096 n_out=12288 r=824
+q4_k dense          : q4_k n_in=4096 n_out=12288 r=824 n_tok=1: 179.71 us per projection (36 nodes/graph)
+lb fused (default)  : lb n_in=4096 n_out=12288 r=824 n_tok=1: 222.49 us per projection (324 nodes/graph)
+lb fusion disabled  : lb n_in=4096 n_out=12288 r=824 n_tok=1: 76.72 us per projection (324 nodes/graph)
+## down: n_in=12288 n_out=4096 r=824
+q4_k dense          : q4_k n_in=12288 n_out=4096 r=824 n_tok=1: 180.13 us per projection (36 nodes/graph)
+lb fused (default)  : lb n_in=12288 n_out=4096 r=824 n_tok=1: 168.11 us per projection (324 nodes/graph)
+lb fusion disabled  : lb n_in=12288 n_out=4096 r=824 n_tok=1: 57.61 us per projection (324 nodes/graph)
+## k/v: n_in=4096 n_out=1024 r=208
+q4_k dense          : q4_k n_in=4096 n_out=1024 r=208 n_tok=1: 19.54 us per projection (36 nodes/graph)
+lb fused (default)  : lb n_in=4096 n_out=1024 r=208 n_tok=1: 32.50 us per projection (324 nodes/graph)
+lb fusion disabled  : lb n_in=4096 n_out=1024 r=208 n_tok=1: 24.19 us per projection (324 nodes/graph)

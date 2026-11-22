@@ -1,0 +1,72 @@
+# ScarionWorkspace/llama.cpp branch littlebit at 9699b11f5, built with -DGGML_CUDA=ON; RTX A1000 6 GB Laptop GPU (compute capability 8.6), i7-13700H
+$ test-backend-ops test -o LITTLEBIT_LINEAR -b CUDA0
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 5859 MiB):
+  Device 0: NVIDIA RTX A1000 6GB Laptop GPU, compute capability 8.6, VMM: yes, VRAM: 5859 MiB
+Testing 2 devices
+
+Backend 1/2: CUDA0
+  Device description: NVIDIA RTX A1000 6GB Laptop GPU
+  Device memory: 5859 MB (5767 MB free)
+
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=1,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=1,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=1,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=3,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=3,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=3,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=3,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=3,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=3,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=8,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=8,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=8,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=8,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=8,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=8,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=9,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=9,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=9,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=9,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=9,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=9,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=1,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=1,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=1,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=1,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=1,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=1,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=3,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=3,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=3,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=3,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=3,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=3,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=8,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=8,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=8,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=8,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=8,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=8,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=9,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=9,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=9,residual=0,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=256,n_out=128,r=40,n_tokens=9,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=384,n_out=200,r=128,n_tokens=9,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=128,n_out=130,r=40,n_tokens=9,residual=0,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=4096,r=544,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=4096,r=544,n_tokens=5,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=1024,r=208,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=1024,r=208,n_tokens=5,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=12288,r=824,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=4096,n_out=12288,r=824,n_tokens=5,residual=1,n_proj=2): OK
+  LITTLEBIT_LINEAR(n_in=12288,n_out=4096,r=824,n_tokens=1,residual=1,n_proj=1): OK
+  LITTLEBIT_LINEAR(n_in=12288,n_out=4096,r=824,n_tokens=5,residual=1,n_proj=2): OK
+  56/56 tests passed
+  Backend CUDA0: OK
+Backend 2/2: CPU
+  Skipping
+2/2 backends passed
+OK
