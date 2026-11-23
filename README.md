@@ -5,7 +5,7 @@ plus measurements on one published checkpoint.
 
 **Whose work this is.** The compression method is LittleBit and LittleBit-2 by Banseok Lee, Dongkyu Kim,
 Youngcheon You and Youngmin Kim at Samsung Research. They developed the method, the training and the
-checkpoint format. This repository contributes only plumbing and tests: 64 lines that load their factorised
+checkpoint format. This repository contributes only plumbing and tests: 76 lines that load their factorised
 layers into llama.cpp's existing 1-bit `Q1_0` type, a script that converts their checkpoint files, and
 measurements. No new tensor type and no new kernel. Please cite their papers (see [Citation](#citation)).
 
@@ -132,6 +132,33 @@ On this NVIDIA card the fused path is the more exact one, as they report, but it
 unfused path, the opposite of their result on an AMD RX 9070 XT (82 to 140 t/s). Ranks that are not multiples of
 32 (208 and 824 in this checkpoint) caused no problem.
 
+Profile of the slowdown, from their own micro-benchmark (`results/scarion/profile-*.tsv`; no GPU profiler was
+available, so this is a parameter sweep):
+
+- Fused time grows almost linearly with the tokens in a batch: 101, 120, 173 and 344 µs per q/o projection for
+  1, 2, 4 and 8 tokens, against 38, 51, 83 and 112 µs unfused. Above 8 tokens the fused path is not used.
+- Across synthetic shapes the fused cost per sign bit is roughly three to four times the unfused cost in both
+  stages, and the second stage (output rows × rank) dominates.
+- Of the three kernel versions on their branch, the first (`000c073d7`) is the fastest on this card at 38.0 t/s,
+  the second (`f2b166c5a`) the slowest at 15.4 t/s, the latest (`9699b11f5`) 24.5 t/s. Unfused is 48.2 t/s.
+
+## Format versions
+
+The three projects use the same tensor names. The layout proposed in the issue thread allows `lb_v` to be stored
+at the true rank (format version 2) while `lb_u` stays padded to a multiple of 128. The patch here reads both
+layouts and the converter writes either (`--unpadded-v`; padded is the default). Checked on the 8B checkpoint,
+12 windows, CUDA; logs in `results/unpadded/`:
+
+| Loader | File | Result |
+|---|---|---|
+| This patch | our padded file (version 1) | 20.8654 |
+| This patch | our `--unpadded-v` file (version 2, 27 MB smaller) | 20.8654 |
+| This patch | file from ScarionWorkspace's converter (unpadded) | 20.8654 |
+| ScarionWorkspace's fork `9699b11f5` | our `--unpadded-v` file | 20.8654 |
+| GeniusDevam's `8853f81` | our `--unpadded-v` file | Refused: `unsupported LittleBit format version` (as intended for older loaders) |
+
+Speed in our build: 1154 / 46.8 t/s (prompt / generation) padded, 1124 / 45.9 unpadded.
+
 ## Layer-wise training experiment
 
 Separately from the plumbing, we tried compressing a model ourselves on the 6 GB laptop GPU with a cheaper
@@ -184,6 +211,7 @@ python scripts/reference_ppl.py checkpoint wiki.test.raw --ctx 2048 --chunks 4
 - 3224 scale values in this checkpoint are below the fp16 normal range (smallest 4.7e-11) and lose
   precision in the `Q1_0` block scale; 56 of them round to zero. No effect is visible in perplexity.
 - Ranks are padded to a multiple of 128 (544→640, 208→256, 824→896): 579 MB instead of 464 MB.
+  `--unpadded-v` pads only `lb_u` and saves 27 MB for this checkpoint (see [Format versions](#format-versions)).
 - No validation in the loader: a malformed file is not rejected with a clear error.
 - LoRA adapters on factorised weights are ignored. Biases on factorised layers are untested.
 - Layers must have an input width that is a multiple of 128.

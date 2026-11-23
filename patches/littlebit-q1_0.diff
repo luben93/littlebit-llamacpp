@@ -1,8 +1,8 @@
 diff --git i/src/llama-graph.cpp w/src/llama-graph.cpp
-index a47cb1e..62ad4ee 100644
+index a47cb1e..63a12dc 100644
 --- i/src/llama-graph.cpp
 +++ w/src/llama-graph.cpp
-@@ -1684,6 +1684,27 @@ ggml_tensor * llm_graph_context::build_lora_mm(
+@@ -1684,6 +1684,31 @@ ggml_tensor * llm_graph_context::build_lora_mm(
            ggml_tensor * w,
            ggml_tensor * cur,
            ggml_tensor * w_s) const {
@@ -14,6 +14,10 @@ index a47cb1e..62ad4ee 100644
 +            auto path = [&](ggml_tensor * u, ggml_tensor * v, ggml_tensor * g) {
 +                ggml_tensor * t = ggml_mul(ctx0, cur, g);
 +                t = ggml_mul_mat(ctx0, v, t);
++                if (t->ne[0] < u->ne[0]) {
++                    // lb_v stored at the true rank: zero-pad the latent up to lb_u's Q1_0 block dimension
++                    t = ggml_pad(ctx0, t, (int) (u->ne[0] - t->ne[0]), 0, 0, 0);
++                }
 +                return ggml_mul_mat(ctx0, u, t);
 +            };
 +            ggml_tensor * res = path(w, lb.v, lb.g);
@@ -31,10 +35,10 @@ index a47cb1e..62ad4ee 100644
      ggml_tensor * cur_mm = build_hadamard_input(w, cur);
      ggml_tensor * res = ggml_mul_mat(ctx0, w, cur_mm);
 diff --git i/src/llama-model.cpp w/src/llama-model.cpp
-index 7c75ab5..f15f6dd 100644
+index 7c75ab5..be43c5d 100644
 --- i/src/llama-model.cpp
 +++ w/src/llama-model.cpp
-@@ -2508,9 +2508,38 @@ ggml_tensor * llama_model_base::create_tensor(llama_model_loader & ml, const LLM
+@@ -2508,9 +2508,46 @@ ggml_tensor * llama_model_base::create_tensor(llama_model_loader & ml, const LLM
          // blocks that are not model layers (e.g. the blocks of a head) go with the output
          buft_list_layer = (size_t) tn.bid < pimpl->dev_layer.size() ? pimpl->dev_layer.at(tn.bid).buft_list : pimpl->dev_output.buft_list;
      }
@@ -55,16 +59,24 @@ index 7c75ab5..f15f6dd 100644
 +            const int64_t n_out = ne.begin()[1];
 +            const int64_t r     = meta->ne[0];
 +
++            // lb_v is either padded like lb_u (rank r) or stored at the true rank; take its rank from its own shape
++            auto rank_of = [&](const LLM_TN_IMPL & tn_v, int64_t r_pad) {
++                const ggml_tensor * meta_v = ml.get_tensor_meta(tn_v.str().c_str());
++                return meta_v != nullptr && meta_v->ne[1] <= r_pad ? meta_v->ne[1] : r_pad;
++            };
++
 +            ggml_tensor * u = create(tn_u, {r, n_out}, 0);
 +            littlebit_weight lb;
-+            lb.v = create(LLM_TN_IMPL(tn.arch, tn.tensor, "lb_v", tn.bid, tn.xid), {n_in, r}, 0);
++            const LLM_TN_IMPL tn_v(tn.arch, tn.tensor, "lb_v", tn.bid, tn.xid);
++            lb.v = create(tn_v, {n_in, rank_of(tn_v, r)}, 0);
 +            lb.g = create(LLM_TN_IMPL(tn.arch, tn.tensor, "lb_g", tn.bid, tn.xid), {n_in},    0);
 +
 +            const LLM_TN_IMPL tn_u_r(tn.arch, tn.tensor, "lb_u_r", tn.bid, tn.xid);
 +            if (const ggml_tensor * meta_r = ml.get_tensor_meta(tn_u_r.str().c_str())) {
 +                const int64_t r_r = meta_r->ne[0];
 +                lb.u_r = create(tn_u_r, {r_r, n_out}, 0);
-+                lb.v_r = create(LLM_TN_IMPL(tn.arch, tn.tensor, "lb_v_r", tn.bid, tn.xid), {n_in, r_r}, 0);
++                const LLM_TN_IMPL tn_v_r(tn.arch, tn.tensor, "lb_v_r", tn.bid, tn.xid);
++                lb.v_r = create(tn_v_r, {n_in, rank_of(tn_v_r, r_r)}, 0);
 +                lb.g_r = create(LLM_TN_IMPL(tn.arch, tn.tensor, "lb_g_r", tn.bid, tn.xid), {n_in},      0);
 +            }
 +            littlebit[u] = lb;

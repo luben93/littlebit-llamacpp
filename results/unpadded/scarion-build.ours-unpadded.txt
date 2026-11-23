@@ -1,0 +1,5 @@
+# llama-perplexity -f wiki.test.raw -c 2048 -b 2048 --chunks 12 -ngl 99, RTX A1000 6 GB. Files: littlebit-qwen3-8b-0.55bpw, F16 embeddings.
+# ScarionWorkspace/llama.cpp 9699b11f5 on our --unpadded-v file
+perplexity: calculating perplexity over 12 chunks, n_ctx=2048, batch_size=2048, n_seq=1
+Final estimate: PPL = 20.8654 +/- 0.57936
+[1]23.5845,[2]25.8911,[3]27.8864,[4]26.2736,[5]26.5941,[6]22.2774,[7]19.2628,[8]19.2359,[9]20.1801,[10]20.0791,[11]20.2208,[12]20.8654,

@@ -1,0 +1,6 @@
+# llama-bench -ngl 99 -t 6 -p 512 -n 64 -r 3, our build, RTX A1000 6 GB
+file	test	avg_tokens_per_s	stddev
+padded	pp512	1154.08	3.65
+padded	tg64	46.79	0.46
+unpadded-v	pp512	1123.83	12.12
+unpadded-v	tg64	45.91	0.66

@@ -1,0 +1,6 @@
+# Same card and tool. Each commit of their littlebit branch rebuilt (libggml-cuda) and measured with fusion enabled, 1 token.
+# tg64 = llama-bench -ngl 99 -t 6 -p 0 -n 64 -r 3 on their F16 file. Unfused reference on this card: 48.2 t/s.
+commit	subject	q_o_us	gate_up_us	down_us	k_v_us	tg64_fused_tokens_per_s
+000c073d7	cuda : fuse the LittleBit linear chain for small batches	54.18	129.34	115.74	14.90	38.0 +/- 0.3
+f2b166c5a	cuda : run consecutive LittleBit projections with the same i	178.31	411.72	240.04	55.39	15.4 +/- 0.0
+9699b11f5	cuda : LittleBit fused kernels - 32 elements per lane, 2 row	101.51	222.31	167.20	32.45	24.5 +/- 0.1

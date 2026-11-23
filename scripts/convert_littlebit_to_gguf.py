@@ -14,7 +14,10 @@ Two steps:
 
 Usage:
   convert_littlebit_to_gguf.py CHECKPOINT_DIR OUT.gguf --llama-cpp /path/to/llama.cpp
-      [--embd-type f16|q8_0] [--embd-quant Q4_K_M --quantize-bin /path/to/llama-quantize]
+      [--embd-type f16|q8_0] [--embd-quant Q4_K_M --quantize-bin /path/to/llama-quantize] [--unpadded-v]
+
+With --unpadded-v, lb_v is stored at the true rank r instead of r_pad (littlebit.format_version = 2).
+lb_u stays padded because the rank is its Q1_0 block dimension; the loader zero-pads the latent.
 """
 import argparse
 import json
@@ -79,6 +82,8 @@ def main() -> None:
                     help="requantize the uncompressed tensors with llama-quantize, e.g. Q4_K_M or Q6_K")
     ap.add_argument("--quantize-bin", type=Path, default=None, help="path to llama-quantize (for --embd-quant)")
     ap.add_argument("--validate", type=int, default=3, help="number of projections to check numerically")
+    ap.add_argument("--unpadded-v", action="store_true",
+                    help="store lb_v at the true rank (format version 2); lb_u stays padded to a multiple of 128")
     args = ap.parse_args()
 
     sys.path.insert(0, str(args.llama_cpp / "gguf-py"))
@@ -119,7 +124,7 @@ def main() -> None:
             vt = field.types[0]
             sub = field.types[-1] if vt == gguf.GGUFValueType.ARRAY else None
             writer.add_key_value(field.name, field.contents(), vt, sub_type=sub)
-        writer.add_uint32("littlebit.format_version", 1)
+        writer.add_uint32("littlebit.format_version", 2 if args.unpadded_v else 1)
         writer.add_bool("littlebit.residual", bool(lb_cfg.get("residual", False)))
         writer.add_float32("littlebit.eff_bits", float(lb_cfg.get("eff_bit", 0.0)))
         writer.add_bool("littlebit.use_itq", bool(lb_cfg.get("use_itq", False)))
@@ -152,7 +157,7 @@ def main() -> None:
                     max_abs, min_abs = max(max_abs, float(a.max())), min(min_abs, float(a.min()))
                     scale_range += int((a > 65504).sum() + (a < 6.2e-5).sum())   # outside normal fp16 range
                 r_pad = -(-rank // BLOCK) * BLOCK
-                v_q = to_q1_0(v_p, in_f, mid, r_pad, in_f)             # [r_pad, in]
+                v_q = to_q1_0(v_p, in_f, mid, rank if args.unpadded_v else r_pad, in_f)   # [r or r_pad, in]
                 u_q = to_q1_0(u_p, rank, u1, out_f, r_pad)             # [out, r_pad]
                 writer.add_tensor(f"{gbase}.lb_g{dst_sfx}", v2.astype(np.float32))
                 writer.add_tensor(f"{gbase}.lb_v{dst_sfx}", v_q, raw_dtype=gguf.GGMLQuantizationType.Q1_0)
@@ -162,7 +167,9 @@ def main() -> None:
                 if checked < args.validate and layer in ("0", "17", "35") and proj == "self_attn.k_proj":
                     x = rng.normal(size=(2, in_f)).astype(np.float32)
                     ref = ((((x * v2) @ unpack(v_p, in_f).T) * mid) @ unpack(u_p, rank).T) * u1
-                    got = ((x * v2) @ q1_0_to_dense(v_q).T) @ q1_0_to_dense(u_q).T
+                    lat = (x * v2) @ q1_0_to_dense(v_q).T
+                    lat = np.pad(lat, ((0, 0), (0, r_pad - lat.shape[1])))    # no-op for the padded layout
+                    got = lat @ q1_0_to_dense(u_q).T
                     err = float(np.abs(got - ref).max() / np.abs(ref).max())
                     print(f"  check {gbase}{dst_sfx}: rank {rank}->{r_pad}, max rel diff vs reference {err:.2e}")
                     assert err < 2e-3, "converted tensors do not reproduce the reference forward"
