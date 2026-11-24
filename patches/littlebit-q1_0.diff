@@ -35,10 +35,25 @@ index a47cb1e..63a12dc 100644
      ggml_tensor * cur_mm = build_hadamard_input(w, cur);
      ggml_tensor * res = ggml_mul_mat(ctx0, w, cur_mm);
 diff --git i/src/llama-model.cpp w/src/llama-model.cpp
-index 7c75ab5..be43c5d 100644
+index 7c75ab5..9cd56ac 100644
 --- i/src/llama-model.cpp
 +++ w/src/llama-model.cpp
-@@ -2508,9 +2508,46 @@ ggml_tensor * llama_model_base::create_tensor(llama_model_loader & ml, const LLM
+@@ -1462,6 +1462,14 @@ void llama_model_base::load_stats(llama_model_loader & ml) {
+ void llama_model_base::load_hparams(llama_model_loader & ml) {
+     const gguf_context * ctx = ml.metadata;
+ 
++    // LittleBit: refuse format versions this loader does not know
++    {
++        uint32_t lb_version = 0;
++        if (ml.get_key(std::string("littlebit.format_version"), lb_version, false) && lb_version != 1 && lb_version != 2) {
++            throw std::runtime_error("unsupported littlebit.format_version " + std::to_string(lb_version) + " (this loader reads 1 and 2)");
++        }
++    }
++
+     // get metadata as string
+     for (int i = 0; i < gguf_get_n_kv(ctx); i++) {
+         gguf_type type = gguf_get_kv_type(ctx, i);
+@@ -2508,9 +2516,52 @@ ggml_tensor * llama_model_base::create_tensor(llama_model_loader & ml, const LLM
          // blocks that are not model layers (e.g. the blocks of a head) go with the output
          buft_list_layer = (size_t) tn.bid < pimpl->dev_layer.size() ? pimpl->dev_layer.at(tn.bid).buft_list : pimpl->dev_output.buft_list;
      }
@@ -62,7 +77,13 @@ index 7c75ab5..be43c5d 100644
 +            // lb_v is either padded like lb_u (rank r) or stored at the true rank; take its rank from its own shape
 +            auto rank_of = [&](const LLM_TN_IMPL & tn_v, int64_t r_pad) {
 +                const ggml_tensor * meta_v = ml.get_tensor_meta(tn_v.str().c_str());
-+                return meta_v != nullptr && meta_v->ne[1] <= r_pad ? meta_v->ne[1] : r_pad;
++                const int64_t rank = meta_v != nullptr ? meta_v->ne[1] : 0;
++                // r_pad is the rank rounded up to a multiple of the Q1_0 block size
++                if (rank < 1 || n_in % 128 != 0 || r_pad != (rank + 127) / 128 * 128) {
++                    throw std::runtime_error("invalid LittleBit projection " + tn_v.str() + ": width " + std::to_string(n_in) +
++                            ", rank " + std::to_string(rank) + ", padded rank " + std::to_string(r_pad));
++                }
++                return rank;
 +            };
 +
 +            ggml_tensor * u = create(tn_u, {r, n_out}, 0);

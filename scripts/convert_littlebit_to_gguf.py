@@ -43,13 +43,17 @@ def to_q1_0(packed: np.ndarray, cols: int, row_scale: np.ndarray, rows_out: int,
     """LittleBit packed sign rows -> raw Q1_0 bytes [rows_out, cols_out/128*18].
 
     packed: int32 [rows, ceil(cols/32)], lsb first, bit 1 = -1. Q1_0 wants bit 1 = +d, so bits are inverted.
-    Rows and columns beyond the source are padding: padded rows get d = 0.
+    Rows and columns beyond the source are padding: padded rows get d = 0 and padding sign bits are 0.
     """
     rows = packed.shape[0]
     assert cols_out % BLOCK == 0 and rows_out >= rows and cols_out >= cols
     bits = np.zeros((rows_out, cols_out // 8), dtype=np.uint8)
     src = np.ascontiguousarray(packed.astype("<i4")).view(np.uint8)          # [rows, words*4]
     bits[:rows, : src.shape[1]] = ~src
+    # columns beyond `cols` are padding: clear their sign bits (the shared format asks writers to)
+    if cols % 8:
+        bits[:, cols // 8] &= (1 << (cols % 8)) - 1
+    bits[:, -(-cols // 8):] = 0
     d = np.zeros(rows_out, dtype=np.float32)
     d[:rows] = row_scale
     d16 = d.astype("<f2")
